@@ -1,16 +1,31 @@
 const quoteCon = document.getElementById('quote-container')
 const quoteText = document.getElementById('quote')
 const authorName = document.getElementById('author')
-const twitterbtn = document.getElementById('twitter')
+const twitterBtn = document.getElementById('twitter')
 const newQuoteBtn = document.getElementById('new-quote')
+const loader = document.getElementById('loader')
 
 
 // https://type.fit/api/quotes
 
 let apiQuote = [];
 
+//show loading
+
+function loading() {
+    loader.hidden = false
+    quoteCon.hidden = true
+}
+
+// hide loading
+function complete() {
+    quoteCon.hidden = false
+    loader.hidden = true
+}
+
 
 function newQuote() {
+    loading()
     const quote = apiQuote[Math.floor(Math.random() * apiQuote.length)]
     console.log(quote)
     if(!quote.author) {
@@ -28,9 +43,11 @@ function newQuote() {
 
     authorName.textContent = quote.author
     quoteText.textContent = quote.text
+    complete()
 }
 
 async function getQuote() {
+    loading()
     const apiUrl = 'https://type.fit/api/quotes'
     try {
         const response = await fetch(apiUrl)
@@ -44,8 +61,15 @@ async function getQuote() {
     }
 }
 
+function tweetQuote () {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${authorName.textContent}-${authorName.textContent}`
+    window.open(twitterUrl, "_blank")
+    
+}
+
 // Even listeners 
 newQuoteBtn.addEventListener('click', newQuote)
+twitterBtn.addEventListener('click', tweetQuote)
 
 getQuote()
 
